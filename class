@@ -1,0 +1,29 @@
+public class LWCExampleController
+{
+    @AuraEnabled(cacheable=true)
+    public static  List<Contact> getContacts()
+    {
+        return [Select Id,FirstName,LastName,Phone,Email from Contact order by Name limit 10];
+    }
+    
+    @AuraEnabled
+    public static void deleteContacts(List<Id> lstConIds)
+    {
+        try
+        {
+            List<Contact> lstConsToDelete = new List<Contact>();
+            for(Id idCon : lstConIds)
+            {
+                lstConsToDelete.add(new Contact(Id = idCon));
+            }
+            if(!lstConsToDelete.isEmpty())
+            {
+                delete lstConsToDelete;
+            }
+        }
+        catch(Exception ex)
+        {
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
+}
